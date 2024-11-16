@@ -28,6 +28,7 @@
 import { usePostStore } from "~/store/post.store";
 
 const postStore = usePostStore();
+const sampleImage = "https://picsum.photos/1200/630"; // Sample image with 1200x630 dimensions
 
 // Fetch posts on component mount
 await postStore.fetchPosts();
@@ -35,17 +36,36 @@ await postStore.fetchPosts();
 useHead({
   title: "Blog Posts | My Blog",
   meta: [
+    // Basic SEO
     {
       name: "description",
       content: "Read our latest blog posts about various topics",
     },
     { name: "robots", content: "index, follow" },
+
+    // Open Graph (works for Facebook, LinkedIn, WhatsApp)
+    { property: "og:type", content: "website" },
     { property: "og:title", content: "Blog Posts | My Blog" },
     {
       property: "og:description",
       content: "Read our latest blog posts about various topics",
     },
-    { property: "og:type", content: "website" },
+    { property: "og:image", content: sampleImage },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { property: "og:url", content: "https://yourblog.com" },
+    { property: "og:site_name", content: "My Blog" },
+    { property: "og:locale", content: "en_US" },
+
+    // Twitter Card (Twitter-specific)
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: "Blog Posts | My Blog" },
+    {
+      name: "twitter:description",
+      content: "Read our latest blog posts about various topics",
+    },
+    { name: "twitter:image", content: sampleImage },
   ],
+  link: [{ rel: "canonical", href: "https://yourblog.com" }],
 });
 </script>

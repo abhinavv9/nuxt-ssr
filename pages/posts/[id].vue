@@ -27,6 +27,7 @@ import { usePostStore } from "../../store/post.store";
 
 const route = useRoute();
 const postStore = usePostStore();
+const sampleImage = "https://picsum.photos/1200/630";
 
 // SSR-friendly data fetching
 const { data } = await useAsyncData(
@@ -41,35 +42,44 @@ const { data } = await useAsyncData(
   }
 );
 
-// SSR-compatible head meta
-useHead({
-  title: computed(() =>
-    data.value?.title ? `${data.value.title} | My Blog` : "Post Not Found"
-  ),
-  meta: computed(() => [
+useHead(() => ({
+  title: data.value?.title ? `${data.value.title} | My Blog` : "Post Not Found",
+  meta: [
+    // Basic SEO
     {
       name: "description",
-      content: data.value?.body
-        ? data.value.body.substring(0, 160)
-        : "Post not found",
+      content: data.value?.body?.substring(0, 160) || "Post not found",
     },
     { name: "robots", content: "index, follow" },
-    {
-      property: "og:title",
-      content: data.value?.title || "Post Not Found",
-    },
+
+    // Open Graph (Facebook, LinkedIn, WhatsApp)
+    { property: "og:type", content: "article" },
+    { property: "og:title", content: data.value?.title || "Post Not Found" },
     {
       property: "og:description",
-      content: data.value?.body
-        ? data.value.body.substring(0, 160)
-        : "Post not found",
+      content: data.value?.body?.substring(0, 160) || "Post not found",
     },
-    { property: "og:type", content: "article" },
-  ]),
-});
+    { property: "og:image", content: sampleImage },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    {
+      property: "og:url",
+      content: `https://yourblog.com/posts/${route.params.id}`,
+    },
+    { property: "og:site_name", content: "My Blog" },
+    { property: "og:locale", content: "en_US" },
 
-// Cleanup
-onUnmounted(() => {
-  postStore.clearPost();
-});
+    // Twitter Card
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: data.value?.title || "Post Not Found" },
+    {
+      name: "twitter:description",
+      content: data.value?.body?.substring(0, 160) || "Post not found",
+    },
+    { name: "twitter:image", content: sampleImage },
+  ],
+  link: [
+    { rel: "canonical", href: `https://yourblog.com/posts/${route.params.id}` },
+  ],
+}));
 </script>
