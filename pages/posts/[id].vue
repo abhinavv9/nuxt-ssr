@@ -27,6 +27,7 @@ import { usePostStore } from "../../store/post.store";
 
 const route = useRoute();
 const postStore = usePostStore();
+// Use absolute HTTPS URL for social sharing
 const sampleImage = "https://picsum.photos/1200/630";
 
 // SSR-friendly data fetching
@@ -59,12 +60,21 @@ useHead(() => ({
       property: "og:description",
       content: data.value?.body?.substring(0, 160) || "Post not found",
     },
+    // Specific image tags for better WhatsApp support
     { property: "og:image", content: sampleImage },
+    { property: "og:image:secure_url", content: sampleImage },
+    { property: "og:image:type", content: "image/jpeg" },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     {
+      property: "og:image:alt",
+      content: data.value?.title || "Blog post image",
+    },
+
+    // WhatsApp specific
+    {
       property: "og:url",
-      content: `https://yourblog.com/posts/${route.params.id}`,
+      content: `https://nuxt-ssr-7nc5.vercel.app/posts/${route.params.id}`,
     },
     { property: "og:site_name", content: "My Blog" },
     { property: "og:locale", content: "en_US" },
